@@ -59,7 +59,7 @@ const Send_Msg = createSlice({
             .addCase(getMessageToUsers.fulfilled, (state, action) => {
                 state.userMessage = action.payload?.Allmessage; // Update users state
                 state.loading = false;
-                console.log("action payload:", action.payload.Allmessage);
+                // console.log("action payload:", action.payload.Allmessage);
                 // toast.success("Users fetched successfully");
             })
             .addCase(getMessageToUsers.rejected, (state, action) => {

@@ -6,7 +6,7 @@ import { useMyContext } from './Chat_Container'
 
 const UserSideBar = ({user}) => {
 
-  const {setAllow,DisplayingUser,setDisplayingUser} = useMyContext()
+  const {setAllow,setDisplayingUser} = useMyContext()
 
   const {id} = user;
 

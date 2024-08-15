@@ -10,7 +10,7 @@ import { groupCreatorSlice } from "../Redux/features/GroupSlice.js";
 
 const SelectGroupMember = () => {
     
-  const {isOpen,setIsOpen} = useMyContext()
+  const {isOpen,setIsOpen,loggedInUser} = useMyContext()
 
   const dispatch = useDispatch()
 
@@ -31,7 +31,7 @@ const SelectGroupMember = () => {
   },[allUsers])
 
   useEffect(()=>{
-    dispatch(fetchAllUsers());
+      // dispatch(fetchAllUsers());
   },[])
 
   const createGroup = ()=>{

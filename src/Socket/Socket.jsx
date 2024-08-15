@@ -11,7 +11,7 @@ export const useSocket = () => {
     useEffect(() => {
       const socket = io('http://localhost:5600/',{
           query:{
-            userId: LoggedInUser.id,
+            userId: LoggedInUser?.id,
           }
         });
         setSocket(socket)

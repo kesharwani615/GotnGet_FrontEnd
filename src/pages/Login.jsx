@@ -1,8 +1,10 @@
 /* eslint-disable no-unused-vars */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { Login_User } from '../Redux/features/loginUser';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { useMyContext } from './Chat_Container';
 
 export const LoginForm = () => {
   // Initialize the useForm hook
@@ -14,6 +16,15 @@ export const LoginForm = () => {
     formState: { errors },reset
   } = useForm();
 
+  const navigate = useNavigate();
+
+  const LoggedIn = useSelector((state)=>state.loggedInUser.userLogin);
+
+  useEffect(()=>{
+    if(LoggedIn?.length > 0)
+      navigate('/');
+  },[LoggedIn])
+
   // Define the onSubmit function
   const onSubmit = (data) => {
     console.log('Form data:', data);
@@ -23,6 +34,7 @@ export const LoginForm = () => {
   };
 
   return (
+    <div>
     <form onSubmit={handleSubmit(onSubmit)} style={formStyle}>
       <h2 style={headingStyle}>Login</h2>
       
@@ -64,7 +76,9 @@ export const LoginForm = () => {
 
       {/* Submit Button */}
       <button type="submit" style={buttonStyle}>Login</button>
+      <a href='/signup' style={{color:'blue',paddingTop:'10px'}}>Do not have account</a>
     </form>
+  </div>
   );
 }
 

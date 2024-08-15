@@ -30,7 +30,7 @@ export const getGroupMessage = createAsyncThunk("/group/getGroupMsg", async (id)
     console.log('called slice:',id);
     try {
         const response = await api.getGroupMessage(id);
-        // console.log("response groupMsg:", response);
+        console.log("response groupMsg:", response);
         return response.data; // Return the response data directly
     } catch (error) {
         console.log("error:", error);
@@ -56,7 +56,7 @@ const GroupCreate = createSlice({
         Group:'',
         AllGroups:[],
         GroupMessage:[],
-        sendGroupMessage:'',
+        sendGroupMessage:[],
         loading: true,
         error: null, // Store any errors
     },
@@ -102,7 +102,7 @@ const GroupCreate = createSlice({
             .addCase(getGroupMessage.fulfilled, (state, action) => {
                 state.GroupMessage = action.payload.message; // Update users state
                 state.loading = false;
-                // console.log("action payload groupMesg:", action.payload);
+                // console.log("action payload groupMesg:", action.payload.message);
                 // toast.success("Users fetched successfully");
             })
             .addCase(getGroupMessage.rejected, (state, action) => {
@@ -116,7 +116,7 @@ const GroupCreate = createSlice({
                 state.error = null; // Clear any previous errors
             })
             .addCase(SendGroupMessage.fulfilled, (state, action) => {
-                state.sendGroupMessage = action.payload; // Update users state
+                state.sendGroupMessage = action.payload.message; // Update users state
                 state.loading = false;
                 // console.log("action payload groupMesg:", action.payload);
                 // toast.success("Users fetched successfully");

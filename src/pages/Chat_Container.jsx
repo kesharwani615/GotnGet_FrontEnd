@@ -22,6 +22,8 @@ export const useMyContext = () => {
 
 export const ContextProvider = ({children})=>{
 
+  const {socket} = useSocket()
+
   const [allow,setAllow] = useState(false);
 
   const [DisplayingUser,setDisplayingUser] = useState(null);
@@ -33,7 +35,7 @@ export const ContextProvider = ({children})=>{
   const [Group_Message,setGroup_Message] = useState([]);
 
   return( 
-   <MyContext.Provider value={{allow,setAllow,DisplayingUser,setDisplayingUser,isOpen,setIsOpen,User_Message,setUser_Message,Group_Message,setGroup_Message}}>
+   <MyContext.Provider value={{socket,allow,setAllow,DisplayingUser,setDisplayingUser,isOpen,setIsOpen,User_Message,setUser_Message,Group_Message,setGroup_Message}}>
     {children}
   </MyContext.Provider>
   )
@@ -43,30 +45,55 @@ const Chat_Container = () => {
 
   const dispatch = useDispatch()
 
-  const sentMessage = useSelector((state)=>state?.SendMessage?.message_sent);
+  const sentMessagetoUser = useSelector((state)=>state?.SendMessage?.message_sent);
+  
+  const sentMessagetoGroup = useSelector((state)=>state?.GroupCreated?.sendGroupMessage);
 
   const [InstantMessage,setInstantMessage] = useState([]);
+
+  const [groupIntanceMessage,setGroupIntanceMessage] = useState([]);
   
   const {User_Message,setUser_Message,Group_Message,setGroup_Message} = useMyContext()
 
-
     // console.log(socket);
-    const {socket} = useSocket();
+    const {socket} = useMyContext();
 
-    useEffect(()=>{
-      console.log('called!!!!',socket)
-        socket && socket.on('new_Message',(message)=>{
-            setInstantMessage(message);
-          })
-
-        return () => {
-            socket && socket?.off("new_Message");
-            }
-    },[socket,sentMessage])
+    useEffect(() => {
+      console.log("sentMessage:", sentMessagetoGroup);
+      if (DisplayingUser?.type) {
+        socket.emit("send_MessageSocket", sentMessagetoGroup);
+      }
+    
+      const handleNewMessage = (message) => {
+        console.log('message:', message);
+        setInstantMessage(message);
+      };
+    
+      const handleReceiveMessage = (data) => {
+        setGroupIntanceMessage(data);
+      };
+    
+      if (socket) {
+        socket.on('new_Message', handleNewMessage);
+        socket.on('receive-message', handleReceiveMessage);
+      }
+    
+      return () => {
+        if (socket) {
+          socket.off("new_Message", handleNewMessage);
+          socket.off("receive-message", handleReceiveMessage);
+        }
+      };
+    }, [socket, sentMessagetoGroup, sentMessagetoUser]);
+        
 
     useEffect(()=>{
       setUser_Message([...InstantMessage,...User_Message]);//adding message for showing instantly
     },[InstantMessage])
+
+    useEffect(()=>{
+      setGroup_Message([...groupIntanceMessage,...Group_Message]);//adding message for showing instantly
+    },[groupIntanceMessage])
   
   const [innerWidth,setInnerWidth] = useState(window.innerWidth);
   
@@ -81,13 +108,17 @@ const Chat_Container = () => {
 
   const {allow,setAllow,DisplayingUser} = useMyContext();
 
+  // console.log("DisplayingUser:",DisplayingUser);
+
   const onSubmit = (data) => {
     const id = DisplayingUser?.id;
     const type = DisplayingUser?.type;
-    if(id && !type)
-    dispatch(SendMessageToUsers({data,id}));
-    else if(id && type)
-    dispatch(SendGroupMessage({data,id}))
+    if(id && !type){
+      dispatch(SendMessageToUsers({data,id}));
+    }
+    else if(id && type){
+      dispatch(SendGroupMessage({data,id}));
+    }
     reset();
    };
  
@@ -109,7 +140,7 @@ const Chat_Container = () => {
         </div>
        <BsThreeDotsVertical/>
        </div>
-      <Conversation_container type={DisplayingUser?.type}  id={DisplayingUser?.id} />
+      <Conversation_container group={DisplayingUser}  id={DisplayingUser?.id} />
       <form onSubmit={handleSubmit(onSubmit)} className='w-full min-h-[100%] bg-white flex justify-between items-center border-t-[1px]'>
         <textarea type="text" placeholder='Enter Your Message' 
         id="Message"
