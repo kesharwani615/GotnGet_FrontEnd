@@ -26,15 +26,11 @@ const Conversation_container = ({ group, id }) => {
   const loggedInUser = JSON.parse(localStorage.getItem("LoginedUser"));
 
   useEffect(() => {
-    if (MessageforUser.length) {
       setUser_Message(MessageforUser);
-    }
   }, [MessageforUser]);
 
   useEffect(() => {
-    if (MessageforGroup.length) {
       setGroup_Message(MessageforGroup);
-    }
   }, [MessageforGroup]);
 
   useEffect(() => {

@@ -48,9 +48,9 @@ const App = () => {
     <Route path="/" element={token?<Chat_Container/>:<Navigate to={'/login'}/>} />
     <Route path="/profile" element={<UserProfile/>} />
     <Route path="/GroupMember" element={<SelectGroupMember/>}/>
-    <Route path="/login" element={<LoginForm />}/>
-    <Route path="/signup" element={<Signup />}/>
-    <Route path="*" element={ <NotFound/> }/>
+    <Route path="/login" element={token?<Navigate to={'/'}/>:<LoginForm />}/>
+    <Route path="/signup" element={token?<Navigate to={'/login'}/>:<Signup />}/>
+    <Route path="*" element={ <NotFound/>}/>
     </Routes>
 
     <SelectGroupMember/>

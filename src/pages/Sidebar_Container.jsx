@@ -22,13 +22,16 @@ const Sidebar_Container = () => {
 
   const dropdownRef = useRef(null);
 
+  // const LoginUser = useSelector((state)=>state.loggedInUser.userLogin);
+
   const loggedInUser = useCallback(
     () => JSON.parse(localStorage.getItem('LoginedUser')),
-    []
-  );
+    []);
 
   const users = useSelector((state) => state.users);
+
   const All_groups = useSelector((state) => state.GroupCreated.AllGroups);
+  
   const IsLogOut = useSelector((state) => state.loggedInUser.userLogout);
 
   const IsLogin = loggedInUser();
@@ -54,11 +57,12 @@ const Sidebar_Container = () => {
   }, []);
 
   useEffect(() => {
+    console.log('IsLogin:',IsLogin);
     if (IsLogin) {
       dispatch(fetchAllUsers());
       dispatch(getAllGroups());
     }
-  }, [IsLogin, dispatch]);
+  }, []);
 
   useEffect(() => {
     if (IsLogOut) navigate('/login');

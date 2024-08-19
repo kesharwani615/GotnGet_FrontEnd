@@ -55,9 +55,11 @@ const Chat_Container = () => {
   
   const {User_Message,setUser_Message,Group_Message,setGroup_Message} = useMyContext()
 
-    // console.log(socket);
-    const {socket} = useMyContext();
+  const {socket} = useMyContext();
 
+  const token = JSON.parse(localStorage.getItem('LoginedUser'));
+
+  
     useEffect(() => {
       console.log("sentMessage:", sentMessagetoGroup);
       if (DisplayingUser?.type) {
@@ -123,7 +125,7 @@ const Chat_Container = () => {
    };
  
   return (
-    <div className='custom relative flex justify-center items-center min-h-[100vh]'>
+    token && <div className='custom relative flex justify-center items-center min-h-[100vh]'>
       <div className={`overflow-hidden absolute sm:static ${!allow?'z-10':'z-0'}`}>
       <Sidebar_Container/>
      </div>
